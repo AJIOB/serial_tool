@@ -10,16 +10,16 @@ Program uses 8 data bits mode, 1 stop bit, no parity, no flow control.
 * port - must be serial port file path, such as `/dev/ttyS1`, for example
 * speed - serial port baud rate, for example `115200`
 * wait_answer_in_sec - time to wait answer until program closing, for example `10` for 10 seconds wait
-* mode - mode flag (see [Supported modes](#Supported-modes) for additional info), for example `-text`
+* mode - mode flag (see [Supported modes](#supported-modes) for additional info), for example `-text`
 * mode_parameters - mode parameters (see required mode section for additional info), for example `Hello`
 
 ## Usage example
 `./serial_tool "/dev/ttyS1" 115200 10 -text Hello`
 
 ## Supported modes
-* `-at` - [AT commands mode](#AT-commands-mode)
-* `-file` - [send file mode](#Send-file-mode)
-* `-text` - [send text from command line](#Send-text-mode)
+* `-at` - [AT commands mode](#at-commands-mode)
+* `-file` - [send file mode](#send-file-mode)
+* `-text` - [send text from command line](#send-text-mode)
 
 ### AT commands mode
 Sends all next parameters to serial port with adding to all of it `\r\n` pair of symbols (carrier return & newline symbols), parameter by parameter
