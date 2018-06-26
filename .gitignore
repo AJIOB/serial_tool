@@ -54,3 +54,4 @@ dkms.conf
 ## Custom path
 /build/*
 /out/*
+.vscode/*

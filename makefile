@@ -12,6 +12,7 @@ OUT_DIR 		= out
 ################################
 SOURCE          = 
 SOURCE          += main.c
+SOURCE          += lib.c
 
 ################################
 ##        Flags config
@@ -56,8 +57,8 @@ $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c
 	@$(CC) -c $(CFLAGS) $< -o $@
 
 clean:
-	@-rm -r $(BUILD_DIR)
-	@-rm -r $(OUT_DIR)
+	@rm -rf $(BUILD_DIR)
+	@rm -rf $(OUT_DIR)
 
 run:
 	@$(PROJECT)
