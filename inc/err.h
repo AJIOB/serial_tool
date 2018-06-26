@@ -18,3 +18,10 @@ typedef uint8_t err_t;
             __LINE__, __FILE__);                            \
         return _err_;                                       \
     }                                                       
+
+#define err_is_null(ptr)                                    \
+    (ptr == NULL ? err_yes : err_no)
+
+#define err_not_equal(n1, n2)                               \
+    (n1 != n2 ? err_yes : err_no)
+
