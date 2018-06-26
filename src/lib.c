@@ -1,4 +1,5 @@
 #include <string.h>
+#include <errno.h>
 
 // for receive_info
 #include <sys/types.h>
@@ -124,32 +125,34 @@ err_t receive_info(struct args_t* args, tty_handler_t* hserial)
     FD_SET(filedesc, &set); /* add our file descriptor to the set */
 
     /* timeout block */
-    struct timeval t_stop;
+    struct timeval t_curr, t_stop;
     err = time_get_stop_time(args->recv_time, &t_stop);
     err_check(err);
 
     while (1)
     {
-        struct timeval t_curr;
         err_int = gettimeofday(&t_curr, NULL);
         err_check(err_not_equal(err_int, 0));
 
+        int cmpres;
+        cmpres = timercmp(&t_stop, &t_curr, <);
+        if (cmpres)
+        {
+            break;
+        }
+
         struct timeval timeout;
-        timersub(&t_stop, &t_curr, &timeout);
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 100000;   /* 0.1s */
 
         int rv;
         rv = select(filedesc + 1, &set, NULL, NULL, &timeout);
         if(rv == -1)
         {
             //error
-            err_check(err_yes);
+            return errno;
         }
-        else if(rv == 0)
-        {
-            //timeout
-            break;
-        }
-        else
+        else if(rv > 0)
         {
             /* there was data to read */
             err_t err;
@@ -160,6 +163,7 @@ err_t receive_info(struct args_t* args, tty_handler_t* hserial)
             putchar(buff);
         }
     }
+
     return err_no;
 }
 
