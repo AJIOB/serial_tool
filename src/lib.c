@@ -43,9 +43,11 @@ err_t parse_args(int argc, char** argv, struct args_t* hargs)
 
 err_t open_serial(struct args_t* args, tty_handler_t* hserial)
 {
-    //TODO
+    int err;
+    err = TTY_Init(hserial, args->port, tty_convert_baudrate(args->speed), 0);
+    err_check(err);
 
-    return err_not_implemented;
+    return err_no;
 }
 
 err_t send_info(struct args_t* args, tty_handler_t* hserial)
@@ -64,7 +66,34 @@ err_t receive_info(struct args_t* args, tty_handler_t* hserial)
 
 err_t close_serial(struct args_t* args, tty_handler_t* hserial)
 {
-    //TODO
+    int err;
+    err = TTY_DeInit(hserial);
+    err_check(err);
 
-    return err_not_implemented;
+    return err_no;
+}
+
+int tty_convert_baudrate (unsigned long long baudrate)
+{
+    int endcode = 0;
+
+    switch(baudrate){
+        case 50:{       endcode = B200;     break;}
+        case 75:{       endcode = B300;     break;}
+        case 150:{      endcode = B600;     break;}
+        case 300:{      endcode = B1200;    break;}
+        case 600:{      endcode = B2400;    break;}
+        case 1200:{     endcode = B4800;    break;}
+        case 2400:{     endcode = B9600;    break;}
+        case 4800:{     endcode = B19200;   break;}
+        case 9600:{     endcode = B38400;   break;}
+        case 57600:{    endcode = B230400;  break;}
+        case 115200:{   endcode = B460800;  break;}
+        case 230400:{   endcode = B921600;  break;}
+        case 500000:{   endcode = B2000000; break;}
+        case 1000000:{  endcode = B4000000; break;}
+        default:{       endcode = B0;       break;}
+    }
+
+    return endcode;
 }

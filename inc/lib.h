@@ -12,3 +12,4 @@ err_t send_info(struct args_t* args, tty_handler_t* hserial);
 err_t receive_info(struct args_t* args, tty_handler_t* hserial);
 err_t close_serial(struct args_t* args, tty_handler_t* hserial);
 
+int tty_convert_baudrate (unsigned long long baudrate);
