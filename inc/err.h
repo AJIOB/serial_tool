@@ -14,8 +14,8 @@ typedef uint8_t err_t;
 #define err_check(_err_)                                    \
     if (_err_ != err_no)                                    \
     {                                                       \
-        printf("Error in line %d, file %s\r\n",             \
-            __LINE__, __FILE__);                            \
+        printf("Error in line %d, file %s, func %s\r\n",    \
+            __LINE__, __FILE__, __func__);                  \
         return _err_;                                       \
     }                                                       
 

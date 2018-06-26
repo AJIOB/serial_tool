@@ -105,7 +105,9 @@ err_t send_info_file(struct args_t* args, tty_handler_t* hserial)
         err_check(err_not_equal(were_read, file_size));
 
         err = TTY_Write(*hserial, buff, file_size);
-        err_check(err);
+        err_check(err_not_equal(err, file_size));
+
+        free(buff);
     }
 
     return err_no;
@@ -133,7 +135,7 @@ err_t receive_info(struct args_t* args, tty_handler_t* hserial)
         err_check(err_not_equal(err_int, 0));
 
         struct timeval timeout;
-        timersub(&t_curr, &t_stop, &timeout);
+        timersub(&t_stop, &t_curr, &timeout);
 
         int rv;
         rv = select(filedesc + 1, &set, NULL, NULL, &timeout);
