@@ -7,18 +7,22 @@ SOURCE_DIR 		= src
 INC_DIR 		= inc
 OUT_DIR 		= out
 
+THIRD_PARTY		= third_party
+
 ################################
 ##        Source config
 ################################
 SOURCE          = 
 SOURCE          += main.c
 SOURCE          += lib.c
+SOURCE          += $(THIRD_PARTY)/TTY.c
+SOURCE          += $(THIRD_PARTY)/dbg.c
 
 ################################
 ##        Flags config
 ################################
 CFLAGS          =
-CFLAGS          += -std=c99
+CFLAGS          += -std=gnu99
 CFLAGS          += -Wall -Wpedantic -Werror
 
 ################################
@@ -61,4 +65,4 @@ clean:
 	@rm -rf $(OUT_DIR)
 
 run:
-	@$(PROJECT)
+	@$(PROJECT) /dev/ttyUSB0 115200 1
