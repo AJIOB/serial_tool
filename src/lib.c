@@ -62,32 +62,31 @@ err_t open_serial(struct args_t* args, tty_handler_t* hserial)
 
 err_t send_info(struct args_t* args, tty_handler_t* hserial)
 {
+    int argc = args->mode_args_num;
+    char** argv = args->mode_args;
+
     switch (args->program_mode)
     {
     case none:
         return err_no;
     case file:
-        return send_info_file(args, hserial);
+        return send_info_file(argc, argv, hserial);
+    case text:
+        return send_info_text(argc, argv, hserial);
     default:
         return err_not_implemented;
     }
 }
 
-err_t send_info_file(struct args_t* args, tty_handler_t* hserial)
+err_t send_info_file(int argc, char** argv, tty_handler_t* hserial)
 {
-    if (args->program_mode != file)
-    {
-        return err_not_implemented;
-    }
-
-    for (int i = 0; i < args->mode_args_num; i++)
+    for (int i = 0; i < argc; i++)
     {
         int file_size;
         FILE* fp;
-        err_t err;
         int err_num;
 
-        fp = fopen(args->mode_args[i], "rb");
+        fp = fopen(argv[i], "rb");
         err_check(err_is_null(fp));
 
         // get file size
@@ -105,8 +104,8 @@ err_t send_info_file(struct args_t* args, tty_handler_t* hserial)
         were_read = fread(buff, sizeof(uint8_t), file_size, fp);
         err_check(err_not_equal(were_read, file_size));
 
-        err = TTY_Write(*hserial, buff, file_size);
-        err_check(err_not_equal(err, file_size));
+        err_num = TTY_Write(*hserial, buff, file_size);
+        err_check(err_not_equal(err_num, file_size));
 
         free(buff);
     }
@@ -114,15 +113,25 @@ err_t send_info_file(struct args_t* args, tty_handler_t* hserial)
     return err_no;
 }
 
+err_t send_info_text(int argc, char** argv, tty_handler_t* hserial)
+{
+    for (int i = 0; i < argc; i++)
+    {
+        int err_num;
+        int file_size = strlen(argv[i]);
+
+        err_num = TTY_Write(*hserial, (uint8_t *)(argv[i]), file_size);
+        err_check(err_not_equal(err_num, file_size));
+    }
+
+    return err_no;
+}
+
 err_t receive_info(struct args_t* args, tty_handler_t* hserial)
 {
-    fd_set set;
-    int filedesc = (*hserial)->fileDes;
+    int serial_desc = (*hserial)->fileDes;
     int err_int;
     err_t err;
-
-    FD_ZERO(&set); /* clear the set */
-    FD_SET(filedesc, &set); /* add our file descriptor to the set */
 
     /* timeout block */
     struct timeval t_curr, t_stop;
@@ -145,8 +154,12 @@ err_t receive_info(struct args_t* args, tty_handler_t* hserial)
         timeout.tv_sec = 0;
         timeout.tv_usec = 100000;   /* 0.1s */
 
+        fd_set set;
+        FD_ZERO(&set); /* clear the set */
+        FD_SET(serial_desc, &set); /* add our file descriptor to the set */
+
         int rv;
-        rv = select(filedesc + 1, &set, NULL, NULL, &timeout);
+        rv = select(serial_desc + 1, &set, NULL, NULL, &timeout);
         if(rv == -1)
         {
             //error
@@ -155,10 +168,14 @@ err_t receive_info(struct args_t* args, tty_handler_t* hserial)
         else if(rv > 0)
         {
             /* there was data to read */
-            err_t err;
             char buff;
-            err = TTY_Read(*hserial, (uint8_t *)&buff, 1);
-            err_check(err);
+            rv = TTY_Read(*hserial, (uint8_t *)&buff, 1);
+            if (rv == -1)
+            {
+                //error
+                return errno;
+            }
+            err_check(err_not_equal(rv, 1));
 
             putchar(buff);
         }
