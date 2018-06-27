@@ -185,6 +185,8 @@ static int TTY_BaudrateWorkAround (int baudrate){
     // Parameter assertion check
     assert_param(IS_TTY_BAUDRATE(baudrate));
 
+    return baudrate;
+#if 0
     int endcode = 0;
 
     switch(baudrate){
@@ -206,4 +208,5 @@ static int TTY_BaudrateWorkAround (int baudrate){
     }
 
     return endcode;
+#endif
 }
