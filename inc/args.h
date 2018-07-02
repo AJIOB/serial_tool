@@ -1,5 +1,7 @@
 #pragma once
 
+#include "third_party/TTY.h"
+
 enum mode_t
 {
     text,
@@ -17,3 +19,5 @@ struct args_t
     char** mode_args;
     int mode_args_num;
 };
+
+typedef TTY_Handle_t* tty_handler_t;

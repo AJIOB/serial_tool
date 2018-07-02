@@ -15,6 +15,7 @@ THIRD_PARTY		= third_party
 SOURCE          = 
 SOURCE          += main.c
 SOURCE          += lib.c
+SOURCE          += modes.c
 SOURCE          += $(THIRD_PARTY)/TTY.c
 SOURCE          += $(THIRD_PARTY)/dbg.c
 
