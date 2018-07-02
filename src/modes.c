@@ -15,6 +15,8 @@ err_t send_info(struct args_t* args, tty_handler_t* hserial)
         return send_info_file(argc, argv, hserial);
     case text:
         return send_info_text(argc, argv, hserial);
+    case at:
+        return send_info_at(argc, argv, hserial);
     default:
         return err_not_implemented;
     }
@@ -64,6 +66,32 @@ err_t send_info_text(int argc, char** argv, tty_handler_t* hserial)
 
         err_num = TTY_Write(*hserial, (uint8_t *)(argv[i]), file_size);
         err_check(err_not_equal(err_num, file_size));
+    }
+
+    return err_no;
+}
+
+err_t send_info_at(int argc, char** argv, tty_handler_t* hserial)
+{
+    static const char endl[] = "\r\n";
+    static const int endl_len = sizeof(endl)/sizeof(endl[0]) - 1;
+
+    for (int i = 0; i < argc; i++)
+    {
+        int at_cmd_len = strlen(argv[i]);
+
+        char* ptr = (char *) malloc ((at_cmd_len + endl_len + 1) * sizeof(char));
+        err_check(err_is_null(ptr));
+
+        strcpy(ptr, argv[i]);
+        strcpy(ptr + at_cmd_len, endl);
+
+        int err_num;
+        int file_size = strlen(ptr);
+        err_num = TTY_Write(*hserial, (uint8_t *)(argv[i]), file_size);
+        err_check(err_not_equal(err_num, file_size));
+
+        free(ptr);
     }
 
     return err_no;
