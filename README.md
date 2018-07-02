@@ -30,3 +30,14 @@ Understands all next parameters as file paths and sends all file content to seri
 
 ### Send text mode
 Sends all next parameters to serial port without changing, parameter by parameter
+
+# Error list
+Some errors generate by system functions. Program returns `errno` in that cases. Other errors description (you can see `inc/err.h` for new errors):
+
+|Error code|Variable name|Error description|
+|---|---|---|
+|0|err_no|No errors (all is good)|
+|1|err_yes|Some error was generated (unknown error)|
+|2|err_not_implemented|This feature is not implemented yet|
+|3|err_few_args|Program needs more command-line arguments to start working|
+|4|err_unknown_mode|Unknown [supported mode](#supported-modes) (or mode is not supported yet)|
