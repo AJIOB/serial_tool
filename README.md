@@ -22,10 +22,10 @@ Program uses 8 data bits mode, 1 stop bit, no parity, no flow control.
 * `-text` - [send text from command line](#send-text-mode)
 
 ### AT commands mode
-Sends all next parameters to serial port with adding to all of it `\r\n` pair of symbols (carrier return & newline symbols), parameter by parameter
+Sends all next parameters to serial port with adding to all of it `\n\r` pair of symbols (carrier return & newline symbols), parameter by parameter
 
 ### Send file mode
-Understands all next parameters as file paths and sends all file content to serial port, file by file.  
+Understands all next parameters as file paths and sends all file content to serial port, file by file.
 **!!!ATTENTION!!!** Please, don't send big files (more that 50 MBytes) over serial port with the help of this program. It sends all file at one moment (by one `send` function call), not in byte by byte mode.
 
 ### Send text mode

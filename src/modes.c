@@ -73,7 +73,7 @@ err_t send_info_text(int argc, char** argv, tty_handler_t* hserial)
 
 err_t send_info_at(int argc, char** argv, tty_handler_t* hserial)
 {
-    static const char endl[] = "\r\n";
+    static const char endl[] = "\n\r";
     static const int endl_len = sizeof(endl)/sizeof(endl[0]) - 1;
 
     for (int i = 0; i < argc; i++)
@@ -88,7 +88,7 @@ err_t send_info_at(int argc, char** argv, tty_handler_t* hserial)
 
         int err_num;
         int file_size = strlen(ptr);
-        err_num = TTY_Write(*hserial, (uint8_t *)(argv[i]), file_size);
+        err_num = TTY_Write(*hserial, (uint8_t *)(ptr), file_size);
         err_check(err_not_equal(err_num, file_size));
 
         free(ptr);
